@@ -10,13 +10,26 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:cid', async (req, res) => {
-  const cart = await manager.getProductsInCartById(req.params.cid);
-  cart ? res.json(cart.products) : res.status(404).send('Carrito no encontrado');
+  try {
+    const products = await manager.getProductsInCartById(req.params.cid);
+    res.json(products);
+  } catch (error) {
+    res.status(404).send('Carrito no encontrado');
+  }
 });
 
 router.post('/:cid/product/:pid', async (req, res) => {
-  const updated = await manager.addProductInCart(req.params.cid, req.params.pid);
-  updated ? res.json(updated) : res.status(404).send('Carrito no encontrado');
+  try {
+    const quantity = req.body.quantity || 1;
+    const updated = await manager.addProductInCart(
+      req.params.cid,
+      req.params.pid,
+      quantity
+    );
+    res.json(updated);
+  } catch (error) {
+    res.status(404).send('Carrito no encontrado');
+  }
 });
 
 export default router;
