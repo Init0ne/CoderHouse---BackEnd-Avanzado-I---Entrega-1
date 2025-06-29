@@ -1,110 +1,78 @@
 import express from 'express';
+import { Router } from 'express';
 import CartManager from './managers/CartManager.js';
 import ProductManager from './managers/ProductManager.js';
-import cartRouter from './routes/carts.router.js';
-import productRouter from './routes/products.router.js';
+import createCartRouter from './routes/carts.router.js';
+import createProductRouter from './routes/products.router.js';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { engine } from 'express-handlebars';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const productManager = new ProductManager(path.join(__dirname, 'data', 'products.json'));
+const cartManager = new CartManager(path.join(__dirname, 'data', 'carts.json'));
 
 const app = express();
 const PORT = 8080;
 app.use(express.json());
 
-const cartManager = new CartManager('./src/data/carts.json');
-const productManager = new ProductManager('./src/data/products.json');
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
 
-//endpoints
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/carts', cartRouter);
-app.use('/api/products', productRouter);
+// Routers
+app.use('/api/products', createProductRouter(productManager));
+app.use('/api/carts', createCartRouter(cartManager));
 
-//----------- /api/products ---------------------
-//Debe listar todos los productos.
-app.get('/api/products', async (req, res)=>{
+// Ruta home.handlebars
+app.get('/', async (req, res) => {
+  const products = await productManager.getProducts();
+  res.render('home', { title: 'Home', products });
+});
+
+// Ruta realTimeProducts.handlebars
+app.get('/realtimeproducts', async (req, res) => {
+  const products = await productManager.getProducts();
+  res.render('realTimeProducts', { title: 'Productos en tiempo real', products });
+});
+
+// Socket.io
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+
+io.on('connection', socket => {
+  console.log('🟢 Cliente conectado via WebSocket');
+
+  socket.on('newProduct', async (data) => {
     try {
-    const products = await productManager.getProducts();
-    res.status(200).json({ status: "success", products });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
+      await productManager.addProduct(data);
+      const updatedProducts = await productManager.getProducts();
+      io.emit('updateProducts', updatedProducts);
+    } catch (error) {
+      console.error('❌ Error al agregar producto:', error.message);
+      socket.emit('errorMessage', error.message);
+    }
+  });
+
+  socket.on('deleteProduct', async (id) => {
+    try {
+      await productManager.deleteProductById(id);
+      const updatedProducts = await productManager.getProducts();
+      io.emit('updateProducts', updatedProducts);
+    } catch (error) {
+      console.error('❌ Error al eliminar producto:', error.message);
+      socket.emit('errorMessage', error.message);
+    }
+  });
 });
 
-//Debe traer solo el producto con el id proporcionado.
-app.get('/api/products/:pid', async (req, res) => {
-  try {
-    const pid = req.params.pid;
-    const product = await productManager.getProductById(pid);
-    res.status(200).json({ status: "success", product });
-  } catch (error) {
-    res.status(404).json({ status: "error", message: error.message });
-  }
-});
-
-//Debe agregar un nuevo producto
-app.post('/api/products', async (req, res) => {
-  try {
-    const productData = req.body;
-    const newProduct = await productManager.addProduct(productData);
-    res.status(201).json({ status: "success", newProduct });
-  } catch (error) {
-    res.status(400).json({ status: "error", message: error.message });
-  }
-});
-
-//Debe actualizar un producto
-app.put('/api/products/:pid', async (req, res) => {
-  try {
-    const pid = req.params.pid;
-    const updatedFields = req.body;
-    const updatedProduct = await productManager.updateProductById(pid, updatedFields);
-    res.status(200).json({ status: "success", updatedProduct });
-  } catch (error) {
-    res.status(400).json({ status: "error", message: error.message });
-  }
-});
-
-//Debe eliminar el producto con el pid indicado
-app.delete('/api/products/:pid', async (req, res) => {
-  try {
-    const pid = req.params.pid;
-    await productManager.deleteProductById(pid);
-    res.status(200).json({ status: "success", message: "Producto eliminado correctamente" });
-  } catch (error) {
-    res.status(404).json({ status: "error", message: error.message });
-  }
-});
-
-//----------- /api/carts ---------------------
-app.post("/api/carts", async(req, res)=> {
-  try {
-    const carts = await cartManager.addCart();
-    res.status(201).json({ status: "success", carts });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
-})
-
-app.post("/api/carts/:cid/product/:pid", async(req, res)=> {
-  try {
-    const { cid, pid } = req.params;
-    const quantity = req.body.quantity;
-
-    const carts = await cartManager.addProductInCart(cid, pid, quantity);
-    res.status(200).json({ status: "success", carts });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
-});
-
-app.get("/api/carts/:cid", async(req, res)=> {
-  try {
-    const cid = req.params.cid;
-
-    const products = await cartManager.getProductsInCartById(cid);
-    res.status(200).json({ status: "success", products });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
-})
-
-app.listen(PORT, ()=> {
-  console.log('Servidor iniciado en el puerto 8080');
+httpServer.listen(PORT, () => {
+  console.log(`Servidor listo en puerto ${PORT}`);
 });

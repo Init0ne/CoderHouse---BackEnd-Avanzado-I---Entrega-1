@@ -1,0 +1,20 @@
+<h1>Lista de productos</h1>
+
+<ul style="list-style: none; padding: 0;">
+  {{#each products}}
+    <li style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+      <h3>{{this.title}} - ${{this.price}}</h3>
+      <p><strong>ID:</strong> {{this.id}}</p>
+      <p><strong>Categoría:</strong> {{this.category}}</p>
+      <p><strong>Descripción:</strong> {{this.description}}</p>
+      <p><strong>Stock:</strong> {{this.stock}} unidades</p>
+      {{#if this.thumbnails.[0]}}
+        <img src="{{this.thumbnails.[0]}}" alt="Imagen de {{this.title}}" style="max-width: 150px;">
+      {{else}}
+        <p>Sin imagen</p>
+      {{/if}}
+    </li>
+  {{/each}}
+</ul>
+
+<a href="/realtimeproducts">Ir a vista en tiempo real</a>

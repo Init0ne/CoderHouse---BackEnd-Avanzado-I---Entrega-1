@@ -1,1 +1,119 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "Yerba Playadito",
+    "description": "Yerba Mate suave de excelente sabor.",
+    "code": "001",
+    "price": 250,
+    "status": "disponible",
+    "stock": 10,
+    "category": "Yerba",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/749013/yerba-mate-playadito-suave-1-kg-1-1618926054.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Café La Virginia",
+    "description": "Café instantáneo clásico.",
+    "code": "002",
+    "price": 450,
+    "status": "disponible",
+    "stock": 15,
+    "category": "Bebidas calientes",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/643746/Cafe-La-Virginia-Instantaneo-Clasico-170-Gr-1-114893.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Azúcar Ledesma",
+    "description": "Azúcar blanca común 1kg.",
+    "code": "003",
+    "price": 300,
+    "status": "disponible",
+    "stock": 20,
+    "category": "Almacén",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/490307/Azucar-Blanca-Ledesma-1-Kg-1-171861545.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Aceite Natura",
+    "description": "Aceite de girasol 900ml.",
+    "code": "004",
+    "price": 800,
+    "status": "disponible",
+    "stock": 12,
+    "category": "Aceites",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/746867/Aceite-Natura-Girasol-900-Ml-1-113801.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Fideos Matarazzo",
+    "description": "Fideos secos tipo spaghetti.",
+    "code": "005",
+    "price": 220,
+    "status": "disponible",
+    "stock": 40,
+    "category": "Pastas secas",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/750198/Fideos-Matarazzo-Spaghetti-500-Gr-1-1620125411.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Galletitas Oreo",
+    "description": "Galletitas rellenas clásicas.",
+    "code": "006",
+    "price": 320,
+    "status": "disponible",
+    "stock": 25,
+    "category": "Golosinas",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/694537/Galletitas-Oreo-Original-117-Gr-1-113743.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Leche La Serenísima",
+    "description": "Leche entera larga vida.",
+    "code": "007",
+    "price": 550,
+    "status": "disponible",
+    "stock": 30,
+    "category": "Lácteos",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/758984/Leche-La-Serenisima-Entera-Larga-Vida-1-Lt-1-112385.jpg"
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Mermelada Arcor",
+    "description": "Mermelada de frutilla en pote.",
+    "code": "008",
+    "price": 430,
+    "status": "disponible",
+    "stock": 10,
+    "category": "Dulces",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/736741/Mermelada-Arcor-Frutilla-454-Gr-1-113606.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Pan Fargo",
+    "description": "Pan lactal blanco.",
+    "code": "009",
+    "price": 700,
+    "status": "disponible",
+    "stock": 18,
+    "category": "Panadería",
+    "thumbnails": [
+      "https://jumboargentina.vtexassets.com/arquivos/ids/719666/Pan-Lactal-Fargo-Blanco-Sandwich-600-Gr-1-113732.jpg"
+    ]
+  }
+]
