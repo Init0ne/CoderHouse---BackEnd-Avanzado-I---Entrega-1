@@ -46,7 +46,7 @@ document.getElementById('product-form').addEventListener('submit', (e) => {
 document.getElementById('delete-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const id = e.target.id.value.trim();
-  if (!isNaN(id) && id !== '') {
+  if (id !== '') {
     socket.emit('deleteProduct', id);
   }
   e.target.reset();

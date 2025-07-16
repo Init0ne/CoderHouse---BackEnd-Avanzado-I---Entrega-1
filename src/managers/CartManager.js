@@ -1,71 +1,43 @@
-import fs from "fs";
+import Product from '../models/product.model.js';
 
-class CartManager {
-  constructor(path) {
-    this.path = path;
+class ProductManager {
+  async getProducts() {
+    const docs = await Product.find().lean();
+    return docs.map(d => ({ ...d, id: d._id.toString(), _id: undefined }));
   }
 
-  generateNewId(carts) {
-    if (carts.length > 0) {
-      return carts[carts.length - 1].id + 1;
-    } else {
-      return 1;
-    }
+  async getProductById(pid) {
+    const product = await Product.findById(pid).lean();
+    if (!product) throw new Error('Producto no encontrado');
+    return { ...product, id: product._id.toString(), _id: undefined };
   }
 
-//addCart
-async addCart (){
-    try {
-      const cartJson = await fs.promises.readFile(this.path, "utf-8");
-      const carts = JSON.parse(cartJson);
-
-      const id = this.generateNewId(carts);
-      carts.push({ id, products: [] });
-
-      await fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2), "utf-8" );
-      return carts;
-    } catch (error) {
-        console.error("Error real en addCart:", error);
-      throw new Error("Error, no se pudo agregar el carrito correctamente");
-    }
-  }
-
-  //getProductsInCartById
-  async getProductsInCartById(cid){
-    try {
-      const cartJson = await fs.promises.readFile(this.path, "utf-8");
-      const carts = JSON.parse(cartJson);
-
-      const cart = carts.find((cartData)=> cartData.id == cid );
-      if(!cart) throw new Error("Carrito no encontrado");
-      return cart.products;
-    } catch (error) {
-      throw new Error("Error, no se pudo traer los productos del carrito correctamente");
-    }
-  }
-
-  //addProductInCart
-  async addProductInCart(cid, pid, quantity){
-    try {
-      const cartJson = await fs.promises.readFile(this.path, "utf-8");
-      const carts = JSON.parse(cartJson);
-
-  const cart = carts.find(c => c.id == cid);
-      if(!cart) throw new Error("Carrito no encontrado");
-
-      const existing = cart.products.find(p => p.id == pid);
-      if (existing) {
-        existing.quantity = (existing.quantity || 0) + Number(quantity);
-      } else {
-        cart.products.push({ id: parseInt(pid), quantity: Number(quantity) });
+  async addProduct(productData) {
+    const requiredFields = ['title', 'description', 'code', 'price', 'status', 'stock', 'category', 'thumbnails'];
+    for (const field of requiredFields) {
+      if (!productData.hasOwnProperty(field)) {
+        throw new Error(`Falta el campo obligatorio: ${field}`);
       }
-
-      await fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2), "utf-8");
-      return cart;
-    } catch (error) {
-      throw new Error("Error, no se pudo agregar el producto en el carrito correctamente");
     }
+    const product = await Product.create(productData);
+    const obj = product.toObject();
+    obj.id = obj._id.toString();
+    delete obj._id;
+    return obj;
   }
-};
 
-export default CartManager;
+  async updateProductById(pid, updatedFields) {
+    delete updatedFields.id;
+    const updated = await Product.findByIdAndUpdate(pid, updatedFields, { new: true }).lean();
+    if (!updated) throw new Error('Producto no encontrado');
+    return { ...updated, id: updated._id.toString(), _id: undefined };
+  }
+
+  async deleteProductById(pid) {
+    const res = await Product.findByIdAndDelete(pid);
+    if (!res) throw new Error('Producto no encontrado');
+    return true;
+  }
+}
+
+export default ProductManager;

@@ -1,5 +1,4 @@
 import express from 'express';
-import { Router } from 'express';
 import CartManager from './managers/CartManager.js';
 import ProductManager from './managers/ProductManager.js';
 import createCartRouter from './routes/carts.router.js';
@@ -9,16 +8,25 @@ import { Server } from 'socket.io';
 import { engine } from 'express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const productManager = new ProductManager(path.join(__dirname, 'data', 'products.json'));
-const cartManager = new CartManager(path.join(__dirname, 'data', 'carts.json'));
+const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 const app = express();
 const PORT = 8080;
 app.use(express.json());
+
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/coder';
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('🟢 Conectado a MongoDB'))
+  .catch(err => console.error('❌ Error al conectar a MongoDB', err));
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
