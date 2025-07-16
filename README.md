@@ -2,19 +2,20 @@
 
 ## Descripción
 
-Esta entrega final implementa un servidor backend con **Express**, **Handlebars** y **Socket.io**, permitiendo visualizar y gestionar productos en tiempo real.
+Esta entrega final implementa un servidor backend con **Express**, **Handlebars**, **Socket.io** y **MongoDB** mediante **Mongoose**, permitiendo visualizar y gestionar productos en tiempo real.
 
 Se incluyen dos vistas principales:
 
 - `/` (**home**): lista todos los productos disponibles, mostrando imagen, título, precio, categoría, descripción y stock.
 - `/realtimeproducts`: muestra la misma lista pero con actualización en vivo usando WebSockets. Permite crear y eliminar productos sin recargar la página.
 
-Además, se exponen rutas API para gestión de productos y carritos.
+Además, se exponen rutas API para gestión de productos y carritos almacenados en MongoDB.
 
 ## Requisitos
 
 - Node.js v14+ o superior
 - npm
+- Instancia de MongoDB (local o en la nube)
 
 ## Instalación
 
@@ -31,12 +32,18 @@ Instalar dependencias:
 npm install
 ```
 
+Copiar `.env.example` a `.env` y configurar `MONGODB_URI`:
+
+```bash
+cp .env.example .env
+```
+
 ## Uso
 
 Iniciar el servidor:
 
 ```bash
-node app.js
+npm start
 ```
 
 Acceder desde el navegador:
@@ -68,9 +75,9 @@ Acceder desde el navegador:
 
 ```
 src/
-├── data/
-│   ├── products.json      # Datos de productos
-│   └── carts.json         # Datos de carritos
+├── models/                # Esquemas de Mongoose
+│   ├── product.model.js
+│   └── cart.model.js
 ├── managers/
 │   ├── ProductManager.js  # Lógica de productos
 │   └── CartManager.js     # Lógica de carritos
@@ -94,7 +101,7 @@ src/
 - Actualización en tiempo real en `/realtimeproducts` al crear o eliminar productos.
 - Integración de Handlebars para renderizado de vistas.
 - WebSockets (Socket.io) para comunicación bidireccional.
-- Gestión de datos mediante ProductManager y CartManager con almacenamiento en archivos JSON.
+- Gestión de datos mediante ProductManager y CartManager conectados a MongoDB.
 - Manejo de errores en backend y emisiones de validaciones al cliente.
 
 ## Notes
