@@ -1,110 +1,162 @@
-# Entrega Final
+# 🧾 Entrega Final - Backend Avanzado I - CoderHouse
 
-## Descripción
+Este proyecto implementa un servidor backend completo con **Express**, **MongoDB**, **Mongoose**, **Handlebars** y **Socket.io**, con gestión de productos y carritos, vistas dinámicas y comunicación en tiempo real.
 
-Esta entrega final implementa un servidor backend con **Express**, **Handlebars**, **Socket.io** y **MongoDB** mediante **Mongoose**, permitiendo visualizar y gestionar productos en tiempo real.
+---
 
-Se incluyen dos vistas principales:
+## 🚀 Tecnologías utilizadas
 
-- `/` (**home**): lista todos los productos disponibles, mostrando imagen, título, precio, categoría, descripción y stock.
-- `/realtimeproducts`: muestra la misma lista pero con actualización en vivo usando WebSockets. Permite crear y eliminar productos sin recargar la página.
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- Handlebars
+- Socket.io
+- Bootstrap 5
+- Cookie-parser
+- Method-override
+- JavaScript (ESM)
 
-Además, se exponen rutas API para gestión de productos y carritos almacenados en MongoDB.
+---
 
-## Requisitos
+## 🎯 Funcionalidades
 
-- Node.js v14+ o superior
-- npm
-- Instancia de MongoDB (local o en la nube)
+- CRUD completo de productos y carritos.
+- Paginación, filtros y orden en listado de productos.
+- WebSocket en `/realtimeproducts` para crear y eliminar productos en vivo.
+- Vistas dinámicas con Handlebars.
+- Carrito persistente mediante cookie (`cartId`).
+- Estética unificada y minimalista.
+- Acciones visuales con `alert()` para eliminar productos o vaciar carrito.
+- Filtros por categoría o estado (`disponible`) desde la vista `/products`.
 
-## Instalación
+---
 
-Clonar el repositorio:
+## 🖥️ Vistas
 
-```bash
-git clone https://github.com/Init0ne/CoderHouse---BackEnd-Avanzado-I---Entrega-1.git
-cd CoderHouse---BackEnd-Avanzado-I---Entrega-1/src
-```
+### `/`
+- Lista estática de productos disponibles.
+- Diseño responsive con tarjetas limpias y visuales.
 
-Instalar dependencias:
+### `/products`
+- Lista paginada, ordenable y filtrable de productos.
+- Vista con botón para ver detalles de cada producto.
+- Formulario con filtro por categoría/estado.
+- Cookie persistente para el carrito.
 
-```bash
-npm install
-```
+### `/products/:pid`
+- Vista individual del producto.
+- Botón para agregar al carrito.
 
-Copiar `.env.example` a `.env` y configurar `MONGODB_URI`:
+### `/realtimeproducts`
+- Vista con productos en tiempo real vía Socket.io.
+- Crear y eliminar productos con formularios en la misma pantalla.
 
-```bash
-cp .env.example .env
-```
+### `/carts/:cid`
+- Lista de productos agregados al carrito.
+- Botón para eliminar individualmente productos.
+- Botón para vaciar todo el carrito.
 
-## Uso
+---
 
-Iniciar el servidor:
-
-```bash
-npm start
-```
-
-Acceder desde el navegador:
-
-- Home: <http://localhost:8080/>
-- Real Time: <http://localhost:8080/realtimeproducts>
-
-## Endpoints API
+## 🔌 Endpoints API REST
 
 ### Productos
 
 | Método | Ruta | Descripción |
-| ------ | ---- | ----------- |
-| GET    | `/api/products` | Listar todos los productos |
-| GET    | `/api/products/:pid` | Obtener producto por ID |
-| POST   | `/api/products` | Crear un nuevo producto |
-| PUT    | `/api/products/:pid` | Actualizar producto por ID |
-| DELETE | `/api/products/:pid` | Eliminar producto por ID |
+|--------|------|-------------|
+| GET | `/api/products` | Listar productos con paginación, filtros y orden |
+| GET | `/api/products/:pid` | Obtener producto por ID |
+| POST | `/api/products` | Crear producto |
+| PUT | `/api/products/:pid` | Actualizar producto |
+| DELETE | `/api/products/:pid` | Eliminar producto |
+
+> Soporta `?limit`, `?page`, `?sort`, `?query` en GET `/api/products`
 
 ### Carritos
 
 | Método | Ruta | Descripción |
-| ------ | ---- | ----------- |
-| POST   | `/api/carts` | Crear un nuevo carrito |
-| GET    | `/api/carts/:cid` | Ver productos de un carrito por ID |
-| POST   | `/api/carts/:cid/product/:pid` | Agregar producto a carrito por IDs |
+|--------|------|-------------|
+| POST | `/api/carts` | Crear carrito |
+| GET | `/api/carts/:cid` | Obtener carrito (con populate de productos) |
+| POST | `/api/carts/:cid/product/:pid` | Agregar producto al carrito |
+| PUT | `/api/carts/:cid` | Reemplazar productos del carrito |
+| PUT | `/api/carts/:cid/products/:pid` | Modificar cantidad de un producto |
+| DELETE | `/api/carts/:cid/products/:pid` | Eliminar producto del carrito |
+| DELETE | `/api/carts/:cid` | Vaciar carrito completo |
 
-## Estructura de carpetas
+---
+
+## 📁 Estructura del proyecto
+
+```bash
+src:
+  app.js: null
+  .env.example: null
+  models/:
+    - product.model.js
+    - cart.model.js
+  managers/:
+    - ProductManager.js
+    - CartManager.js
+  routes/:
+    - products.router.js
+    - carts.router.js
+    - views.router.js
+  public/:
+    js/:
+      - realtime.js
+      - products.js
+  views/:
+    layouts/:
+      - main.handlebars
+    "":
+      - home.handlebars
+      - products.handlebars
+      - productDetail.handlebars
+      - cart.handlebars
+      - realTimeProducts.handlebars
 
 ```
-src/
-├── models/                # Esquemas de Mongoose
-│   ├── product.model.js
-│   └── cart.model.js
-├── managers/
-│   ├── ProductManager.js  # Lógica de productos
-│   └── CartManager.js     # Lógica de carritos
-├── routes/
-│   ├── products.router.js # Rutas de productos
-│   └── carts.router.js    # Rutas de carritos
-├── views/
-│   ├── layouts/
-│   │   └── main.handlebars  # Layout base
-│   ├── home.handlebars      # Vista estática de productos
-│   └── realTimeProducts.handlebars # Vista en tiempo real
-├── public/
-│   └── js/
-│       └── realtime.js       # Cliente Socket.io
-└── app.js                 # Servidor Express + Handlebars + Socket.io
+---
+
+## ⚙️ Instalación y uso
+
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/Init0ne/CoderHouse---BackEnd-Avanzado-I---Entrega-1.git
+cd CoderHouse---BackEnd-Avanzado-I---Entrega-1/src
+Instalar dependencias:
 ```
+```bash
+npm install
+Configurar archivo .env:
+```
+```bash
+cp .env.example .env
+```
+# Editar MONGODB_URI con tu conexión
+Ejecutar servidor:
 
-## Funcionalidades
+npm start
+Acceder a las vistas:
 
-- Visualización estática de productos en `/`.
-- Actualización en tiempo real en `/realtimeproducts` al crear o eliminar productos.
-- Integración de Handlebars para renderizado de vistas.
-- WebSockets (Socket.io) para comunicación bidireccional.
-- Gestión de datos mediante ProductManager y CartManager conectados a MongoDB.
-- Manejo de errores en backend y emisiones de validaciones al cliente.
+http://localhost:8080/
 
-## Notes
+http://localhost:8080/products
 
-- La vista de tiempo real envía los datos de creación y eliminación solo por WebSocket.
-- La vista home muestra imágenes reales tomadas de URLs públicas.
+http://localhost:8080/realtimeproducts
+
+📌 Notas importantes
+La cookie cartId se genera automáticamente al agregar un producto por primera vez.
+
+Se usa method-override para permitir DELETE desde formularios.
+
+Las imágenes de productos son cargadas por URL.
+
+El sistema es compatible con MongoDB Atlas o local.
+
+🧑‍💻 Autor
+Mathias Falvo – Desarrollador Backend
+
+Proyecto final del curso Backend Avanzado I – CoderHouse
