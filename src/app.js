@@ -10,6 +10,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import viewsRouter from './routes/views.router.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ const cartManager = new CartManager();
 const app = express();
 const PORT = 8080;
 app.use(express.json());
+
+app.use('/', viewsRouter);
 
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/coder';
 mongoose.connect(MONGO_URI)
@@ -84,3 +88,5 @@ io.on('connection', socket => {
 httpServer.listen(PORT, () => {
   console.log(`Servidor listo en puerto ${PORT}`);
 });
+
+app.use(errorHandler);
