@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import Product from '../models/product.model.js';
 import Cart from '../models/cart.model.js';
+import cookieParser from 'cookie-parser';
 
 const router = Router();
 
@@ -34,7 +35,9 @@ router.get('/products', async (req, res) => {
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
-      nextPage: result.nextPage
+      nextPage: result.nextPage,
+      cartId: req.cookies.cartId || null,
+      year: new Date().getFullYear()
     });
   } catch (err) {
     res.status(500).send('Error cargando productos');
@@ -55,7 +58,12 @@ router.get('/carts/:cid', async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cid).populate('products.product').lean();
     if (!cart) return res.status(404).send('Carrito no encontrado');
-    res.render('cart', { title: 'Carrito', cart });
+    res.render('cart', {
+      title: 'Carrito',
+      cart,
+      cartId: req.params.cid,
+      year: new Date().getFullYear()
+    });
   } catch (err) {
     res.status(500).send('Error al cargar el carrito');
   }

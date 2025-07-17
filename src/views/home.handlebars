@@ -1,20 +1,42 @@
-<h1>Lista de productos</h1>
+<h2 class="text-center mb-4">🛍️ Productos disponibles</h2>
 
-<ul style="list-style: none; padding: 0;">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
   {{#each products}}
-    <li style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
-      <h3>{{this.title}} - ${{this.price}}</h3>
-      <p><strong>ID:</strong> {{this.id}}</p>
-      <p><strong>Categoría:</strong> {{this.category}}</p>
-      <p><strong>Descripción:</strong> {{this.description}}</p>
-      <p><strong>Stock:</strong> {{this.stock}} unidades</p>
-      {{#if this.thumbnails.[0]}}
-        <img src="{{this.thumbnails.[0]}}" alt="Imagen de {{this.title}}" style="max-width: 150px;">
-      {{else}}
-        <p>Sin imagen</p>
-      {{/if}}
-    </li>
-  {{/each}}
-</ul>
+    <div class="col">
+      <div class="product-card h-100 p-3 border rounded shadow-sm" style="background-color: #fff;">
+        <div class="text-center mb-3">
+          {{#if this.thumbnails.[0]}}
+            <img src="{{this.thumbnails.[0]}}" alt="Imagen de {{this.title}}" class="img-fluid rounded" style="max-height: 200px; object-fit: cover;">
+          {{else}}
+            <div style="height: 200px; display: flex; align-items: center; justify-content: center; background-color: #eee;" class="rounded">
+              <small class="text-muted">Sin imagen</small>
+            </div>
+          {{/if}}
+        </div>
 
-<a href="/realtimeproducts">Ir a vista en tiempo real</a>
+        <h5 class="fw-bold text-center" style="color: #2D4F2B;">{{this.title}}</h5>
+        <p class="text-muted text-center mb-2">${{this.price}}</p>
+
+        <ul class="list-unstyled small">
+          <li><strong>Categoría:</strong> {{this.category}}</li>
+          <li><strong>Stock:</strong> {{this.stock}}</li>
+          <li><strong>Estado:</strong> {{this.status}}</li>
+        </ul>
+
+        <div class="d-grid mt-3">
+          <a href="/products/{{this.id}}" class="btn btn-outline-dark btn-sm">Ver detalles</a>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
+
+<div class="mt-4 d-flex justify-content-between">
+  {{#if hasPrevPage}}
+    <a href="?page={{prevPage}}" class="btn btn-outline-secondary">← Anterior</a>
+  {{/if}}
+
+  {{#if hasNextPage}}
+    <a href="?page={{nextPage}}" class="btn btn-outline-secondary ms-auto">Siguiente →</a>
+  {{/if}}
+</div>

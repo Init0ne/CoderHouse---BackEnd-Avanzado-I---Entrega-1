@@ -1,16 +1,34 @@
-<h1>{{product.title}}</h1>
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="product-card p-4 text-center">
+        {{#if product.thumbnails.[0]}}
+          <img src="{{product.thumbnails.[0]}}" alt="{{product.title}}" class="img-fluid mb-4 rounded shadow-sm" style="max-height: 300px;">
+        {{else}}
+          <div style="height: 300px; background-color: #eee;" class="d-flex justify-content-center align-items-center mb-4 rounded">
+            <span class="text-muted">Sin imagen</span>
+          </div>
+        {{/if}}
 
-<p><strong>Descripción:</strong> {{product.description}}</p>
-<p><strong>Precio:</strong> ${{product.price}}</p>
-<p><strong>Categoría:</strong> {{product.category}}</p>
-<p><strong>Stock:</strong> {{product.stock}}</p>
-<p><strong>Status:</strong> {{product.status}}</p>
+        <h2 class="fw-bold">{{product.title}}</h2>
+        <p class="lead text-muted">{{product.description}}</p>
 
-{{#if product.thumbnails.[0]}}
-  <img src="{{product.thumbnails.[0]}}" alt="{{product.title}}" style="max-width: 200px;">
-{{/if}}
+        <hr />
 
-<br><br>
-<button onclick="alert('Simular agregar al carrito')">Agregar al carrito</button>
-<hr>
-<a href="/products">⬅️ Volver</a>
+        <ul class="list-unstyled text-start">
+          <li><strong>Precio:</strong> ${{product.price}}</li>
+          <li><strong>Categoría:</strong> {{product.category}}</li>
+          <li><strong>Stock disponible:</strong> {{product.stock}}</li>
+          <li><strong>Estado:</strong> {{product.status}}</li>
+          <li><strong>ID del producto:</strong> {{product.id}}</li>
+        </ul>
+
+        <button class="btn btn-warning mt-4">Agregar al carrito 🛒</button>
+
+        <div class="mt-4">
+          <a href="/products" class="btn btn-outline-secondary">← Volver al listado</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
