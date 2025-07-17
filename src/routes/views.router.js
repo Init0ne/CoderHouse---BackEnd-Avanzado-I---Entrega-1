@@ -37,7 +37,8 @@ router.get('/products', async (req, res) => {
       prevPage: result.prevPage,
       nextPage: result.nextPage,
       cartId: req.cookies.cartId || null,
-      year: new Date().getFullYear()
+      year: new Date().getFullYear(),
+      query: req.query.query || ''
     });
   } catch (err) {
     res.status(500).send('Error cargando productos');

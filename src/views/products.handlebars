@@ -1,6 +1,18 @@
 <div class="container mt-5">
   <h1 class="text-center mb-4" style="color: #2D4F2B;">🛍️ Productos disponibles</h1>
 
+  <form class="row mb-4" method="GET" action="/products">
+  <div class="col-md-6">
+    <label for="query" class="form-label">Filtrar por categoría:</label>
+    <select name="query" id="query" class="form-select" onchange="this.form.submit()">
+      <option value="">Todas</option>
+      <option value="ropa" {{#ifEquals query "ropa"}}selected{{/ifEquals}}>Ropa</option>
+      <option value="calzado" {{#ifEquals query "calzado"}}selected{{/ifEquals}}>Calzado</option>
+      <option value="disponible" {{#ifEquals query "disponible"}}selected{{/ifEquals}}>Sólo disponibles</option>
+    </select>
+  </div>
+</form>
+
   <div class="row">
     {{#each products}}
       <div class="col-md-4 mb-4">
